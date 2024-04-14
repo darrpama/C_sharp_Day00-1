@@ -48,6 +48,8 @@ void PrintOutput(int mounths, double sum, double rate)
     DateTime currentDate = DateTime.Now;
     DateTime paymentDate = currentDate.AddDays(-currentDate.Day + 1);
     paymentDate = paymentDate.AddMonths(1);
+    paymentDate = paymentDate.AddYears(-3);
+    Console.WriteLine(paymentDate);
 
     double ratePerMonth = GetInterestRateOnLoanPerMounth(rate);
     double monthlyPayment = GetTotalMonthlyPayment(sum, ratePerMonth, mounths);
@@ -55,20 +57,17 @@ void PrintOutput(int mounths, double sum, double rate)
     for (int i = 1; i <= mounths; i++)
     {
         int daysOfThePeriod = DateTime.DaysInMonth(paymentDate.Year, paymentDate.Month);
-        // int daysOfTheYear = DateTime.IsLeapYear(paymentDate.Year) ? 366 : 365;
-        int daysOfTheYear = 365;
-        paymentDate = paymentDate.AddMonths(1);
-        double monthlyPaymentInterest = GetMonthlyPaymentInterest(sum - tmp, rate, daysOfThePeriod, daysOfTheYear);
-        // Console.WriteLine("{0}\t{1}\t{2}\t{3}", sum, rate, daysOfThePeriod, daysOfTheYear);
-        double remainingDebt = sum - monthlyPayment;
+        int daysOfTheYear = DateTime.IsLeapYear(paymentDate.Year) ? 366 : 365;
+        double monthlyPaymentInterest = GetMonthlyPaymentInterest(sum, rate, daysOfThePeriod, daysOfTheYear);
         double principalDebt = monthlyPayment - monthlyPaymentInterest;
+        double remainingDebt = sum - principalDebt;
         if (remainingDebt < 0)
         {
             remainingDebt = 0;
         }
-        Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", i, paymentDate.ToString("MM/dd/yyyy"), monthlyPayment.ToString("0.##"), ().ToString("0.##"), monthlyPaymentInterest.ToString("0.##"), remainingDebt.ToString("0.##"));
-        sum -= monthlyPayment;
-        tmp = monthlyPayment-monthlyPaymentInterest;
+        paymentDate = paymentDate.AddMonths(1);
+        Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", i, paymentDate.ToString("MM/dd/yyyy"), monthlyPayment.ToString("0.##"), principalDebt.ToString("0.##"), monthlyPaymentInterest.ToString("0.##"), remainingDebt.ToString("0.##"));
+        sum -= principalDebt;
     }
 }
 
