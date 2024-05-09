@@ -1,5 +1,4 @@
-﻿
-if (args.Length != 3)
+﻿if (args.Length != 3)
 {
     throw new ArgumentException("Something went wrong. Check your input and retry.");
 }
@@ -71,6 +70,3 @@ void PrintOutput(int mounths, double sum, double rate)
 }
 
 PrintOutput(numberOfMonths, loanAmount, annualPercentageRate);
-
-
-
