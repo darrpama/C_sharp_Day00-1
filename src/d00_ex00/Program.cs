@@ -1,9 +1,4 @@
-﻿if (args.Length != 3)
-{
-    throw new ArgumentException("Something went wrong. Check your input and retry.");
-}
-
-double GetTotalMonthlyPayment(double loanAmmount, double interestRateOnLoanPerMounth, int mounths)
+﻿double GetTotalMonthlyPayment(double loanAmmount, double interestRateOnLoanPerMounth, int mounths)
 {
     if (mounths < 0)
     {
@@ -27,10 +22,6 @@ double GetMonthlyPaymentInterest(double totalDebtBalance, double annualPercentag
     monthlyPaymentInterest = (totalDebtBalance * annualPercentageRate * daysOfPeriod) / (100 * daysPerYear);
     return monthlyPaymentInterest;
 }
-
-double loanAmount = Convert.ToDouble(args[0]);
-double annualPercentageRate = Convert.ToDouble(args[1]);
-int numberOfMonths = Convert.ToInt32(args[2]);
 
 void PrintOutput(int mounths, double sum, double rate)
 {
@@ -69,4 +60,20 @@ void PrintOutput(int mounths, double sum, double rate)
     }
 }
 
-PrintOutput(numberOfMonths, loanAmount, annualPercentageRate);
+try
+{
+    if (args.Length != 3)
+    {
+        throw new ArgumentException("Something went wrong. Check your input and retry.");
+    }
+
+    double loanAmount = Convert.ToDouble(args[0]);
+    double annualPercentageRate = Convert.ToDouble(args[1]);
+    int numberOfMonths = Convert.ToInt32(args[2]);
+
+    PrintOutput(numberOfMonths, loanAmount, annualPercentageRate);
+}
+catch (Exception e)
+{
+    Console.WriteLine(e.Message);
+}
