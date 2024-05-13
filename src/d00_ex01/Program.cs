@@ -1,65 +1,73 @@
 
 int LevenshteinDistance(string s, string t) {
-    // create two work vectors of integer distances
-    int n = t.Length;
-    int m = s.Length;
-    int[] v0 = new int[n + 1];
-    int[] v1 = new int[n + 1];
+    int[,] A = new int[s.Length + 1, t.Length + 1];
 
-    // initialize v0 (the previous row of distances)
-    // this row is A[0][i]: edit distance from an empty s to t;
-    // that distance is the number of characters to append to  s to make t.
-    for (int i = 0; i < n+1; i++) {
-        v0[i] = i;
+    int rows = A.GetUpperBound(0) + 1;
+    int cols = A.Length / rows;
+
+    for (int i = 0; i < cols; i++) {
+        A[0, i] = i;
     }
 
-    for (int i = 0; i < m - 1; i++) {
-        // calculate v1 (current row distances) from the previous row v0
+    for (int j = 0; j < rows; j++) {
+        A[j, 0] = j;
+    }
 
-        // first element of v1 is A[i + 1][0]
-        //   edit distance is delete (i + 1) chars from s to match empty t
-        foreach (int v in v0) {
-            Console.Write("[{0}]", v);
-        }
-        Console.Write("\n");
+    // for (int i = 0; i < rows; i++) {
+    //     for (int j = 0; j < cols; j++) {
+    //         Console.Write($"{A[i,j]} ");
+    //     }
+    //     Console.WriteLine();
+    // }
 
-
-        v1[0] = i + 1;
-
-        // use formula to fill in the rest of the row
-        for (int j = 0; j < n; j++) {
-            // calculating costs for A[i + 1][j + 1]
-            int deletionCost = v0[j + 1] + 1;
-            int insertionCost = v1[j] + 1;
-            int substitutionCost = 0;
-            if (s[i] == t[j]) {
-                substitutionCost = v0[j];
+    int substitutionCost = 0;
+    for (int j = 1; j < cols; j++) {
+        for (int i = 1; i < rows; i++) {
+            if (s[i-1] == t[j-1]) {
+                substitutionCost = 0;
             } else {
-                substitutionCost = v0[j] + 1;
+                substitutionCost = 1;
+            }
+            int min = 0;
+            int deletion = A[i-1, j] + 1;
+            int insertion = A[i, j-1] + 1;
+            int substitution = A[i-1, j-1] + substitutionCost;
+
+            min = deletion;
+            if (insertion < min) {
+                min = insertion;
+            }
+            if (substitution < min) {
+                min = substitution;
             }
 
-            int min = deletionCost;
-            if (insertionCost < min) {
-                min = insertionCost;
-            }
-            if (deletionCost < min) {
-                min = deletionCost;
-            }
-
-            v1[j + 1] = min;
-        }
-
-        // copy v1 (current row) to v0 (previous row) for next iteration
-        // since data in v1 is always invalidated, a swap without copy could be more efficient
-        for (int k = 0; k < n + 1; k++) {
-            v0[k] = v1[k];
+            A[i, j] = min;
         }
     }
-    return v0[n];
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            Console.Write($"{A[i,j]} ");
+        }
+        Console.WriteLine();
+    }
+
+    return A[rows-1, cols-1];
 }
-// after the last swap, the results of v1 are now in v0
 
-string s1 = "sitting";
-string s2 = "kitten";
 
-Console.WriteLine(LevenshteinDistance(s1, s2));
+void PrintOutput() {
+    string name = args[0];
+    FileStream? fstream = null;
+    try {
+        fstream = FileStream("../../materials/us_names.txt", FileMode.Open)
+    } catch (Exception e)
+    {
+
+    } finally {
+        fstream?.Close();
+    }
+    
+}
+
+PrintOutput();
