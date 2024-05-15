@@ -1,7 +1,6 @@
 
 int LevenshteinDistance(string s, string t) {
     int[,] A = new int[s.Length + 1, t.Length + 1];
-
     int rows = A.GetUpperBound(0) + 1;
     int cols = A.Length / rows;
 
@@ -12,13 +11,6 @@ int LevenshteinDistance(string s, string t) {
     for (int j = 0; j < rows; j++) {
         A[j, 0] = j;
     }
-
-    // for (int i = 0; i < rows; i++) {
-    //     for (int j = 0; j < cols; j++) {
-    //         Console.Write($"{A[i,j]} ");
-    //     }
-    //     Console.WriteLine();
-    // }
 
     int substitutionCost = 0;
     for (int j = 1; j < cols; j++) {
@@ -45,30 +37,40 @@ int LevenshteinDistance(string s, string t) {
         }
     }
 
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            Console.Write($"{A[i,j]} ");
-        }
-        Console.WriteLine();
-    }
+    // for (int i = 0; i < rows; i++) {
+    //     for (int j = 0; j < cols; j++) {
+    //         Console.Write($"{A[i,j]} ");
+    //     }
+    //     Console.WriteLine();
+    // }
 
     return A[rows-1, cols-1];
 }
 
 
-void PrintOutput() {
+async void PrintOutput() {
     string name = args[0];
-    FileStream? fstream = null;
-    try {
-        fstream = FileStream("../../materials/us_names.txt", FileMode.Open)
-        for ()
-    } catch (Exception e)
-    {
-
-    } finally {
-        fstream?.Close();
+    string filename = "../../materials/us_names.txt";
+    bool end = false;
+    using (StreamReader reader = new StreamReader(filename)) {
+        string? line;
+        while ((line = reader.ReadLine()) != null) {
+            if (line == name) {
+                Console.WriteLine($"Hello, {name}");
+                end = true;
+            }
+        }
     }
-    
+    if (!end) {
+        using (StreamReader reader = new StreamReader(filename)) {
+            string? line;
+                while (((line = reader.ReadLine()) != null) ) {
+                    if ((LevenshteinDistance(name, line) == 1)) {
+                        Console.WriteLine($"Did you mean \"{line}\"? Y/N");
+                    }
+                }
+        }
+    }
 }
 
 PrintOutput();
