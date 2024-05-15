@@ -1,4 +1,3 @@
-
 int LevenshteinDistance(string s, string t) {
     int[,] A = new int[s.Length + 1, t.Length + 1];
     int rows = A.GetUpperBound(0) + 1;
@@ -37,26 +36,41 @@ int LevenshteinDistance(string s, string t) {
         }
     }
 
-    // for (int i = 0; i < rows; i++) {
-    //     for (int j = 0; j < cols; j++) {
-    //         Console.Write($"{A[i,j]} ");
-    //     }
-    //     Console.WriteLine();
-    // }
-
     return A[rows-1, cols-1];
 }
 
+bool StringIsValid(string s) {
+    foreach (var ch in s) {
+        if ((ch > 64) || (ch < 123) || (ch == 45) || (ch == 32)) {
+            continue;
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
 
-async void PrintOutput() {
-    string name = args[0];
+void PrintOutput() {
+    Console.Write(">Enter name: ");
+    string? name = Console.ReadLine();
+
+    if (name == null) {
+        Console.WriteLine("Your name was not found.");
+        return;
+    }
+
+    if (!StringIsValid(name)) {
+        Console.WriteLine("Something went wrong. Check your input and retry.");
+        return;
+    }
+
     string filename = "../../materials/us_names.txt";
     bool end = false;
     using (StreamReader reader = new StreamReader(filename)) {
         string? line;
         while ((line = reader.ReadLine()) != null) {
             if (line == name) {
-                Console.WriteLine($"Hello, {name}");
+                Console.WriteLine($"Hello, {name}!");
                 end = true;
             }
         }
@@ -64,11 +78,19 @@ async void PrintOutput() {
     if (!end) {
         using (StreamReader reader = new StreamReader(filename)) {
             string? line;
-                while (((line = reader.ReadLine()) != null) ) {
-                    if ((LevenshteinDistance(name, line) == 1)) {
-                        Console.WriteLine($"Did you mean \"{line}\"? Y/N");
+            while (((line = reader.ReadLine()) != null) && !end) {
+                if ((LevenshteinDistance(name, line) == 1)) {
+                    Console.WriteLine($">Did you mean \"{line}\"? Y/N");
+                    string? input = Console.ReadLine();
+                    if (input == "Y") {
+                        end = true;
+                        Console.WriteLine($"Hello, {line}!");
                     }
                 }
+            }
+            if (!end) {
+                Console.WriteLine("Your name was not found.");
+            }
         }
     }
 }
